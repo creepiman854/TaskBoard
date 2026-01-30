@@ -19,11 +19,17 @@ onAuthStateChanged(auth, (userFirebase) => {
 export const register = async (email, password) => {
   try {
     const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+    user.value = userCredentials?.user;
+
+    await sendEmailVerification(user.value, {
+      url: window.location.origin + "/",
+    });
+
     console.log("User created");
 
     return {
       ok: true,
-      message: "Cuenta creada.",
+      message: "Revisa tu correo y verifica tu cuenta para continuar",
       user: userCredentials,
     };
   } catch (error) {
@@ -39,6 +45,17 @@ export const register = async (email, password) => {
 export const login = async (email, password) => {
   try {
     const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+    user.value = userCredentials?.user;
+
+    if (!user.value.emailVerified) {
+      await signOut(auth);
+
+      return {
+        ok: false,
+        message: "Debes verificar tu email para iniciar sesión.",
+      };
+    }
+
     console.log("User logged");
 
     return {
@@ -71,29 +88,6 @@ export const logout = async () => {
     return {
       ok: false,
       message: "No se ha podido cerrar sesión.",
-    };
-  }
-};
-
-export const sendVerification = async (email) => {
-  try {
-    if (auth.currentUser.emailVerified) {
-      console.log("User verified");
-      return;
-    }
-
-    await sendEmailVerification(email);
-
-    return {
-      ok: true,
-      message: "Email de verificación enviado.",
-    };
-  } catch (error) {
-    console.log("VERIFICATION EMAIL ERROR: ", error);
-
-    return {
-      ok: false,
-      message: "No se ha podido enviar el correo de verificación.",
     };
   }
 };
