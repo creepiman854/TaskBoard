@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { user } from "@/services/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase/config";
 
@@ -8,19 +7,17 @@ const router = createRouter({
   routes: [
     { path: "/", component: () => import("@/views/TasksView.vue"), meta: { requiresAuth: true } },
     {
-      path: "/dashboard",
-      component: () => import("@/views/DashboardView.vue"),
+      path: "/workspace",
+      component: () => import("@/views/WorkspaceView.vue"),
       meta: { requiresAuth: true },
     },
     { path: "/authentication", component: () => import("@/views/AuthView.vue") },
   ],
 });
 
-onAuthStateChanged(auth, (userFirebase) => {
-  user.value = userFirebase;
-
-  router.beforeEach((to, from, next) => {
-    if (to.meta.requiresAuth && !user.value) {
+router.beforeEach((to, from, next) => {
+  onAuthStateChanged(auth, (userFirebase) => {
+    if (to.meta.requiresAuth && !userFirebase) {
       next("/authentication");
     } else {
       next();
