@@ -73,6 +73,10 @@ const registerUser = async () => {
       text: "Revisa tu correo y verifica tu cuenta para continuar",
       icon: "success",
       confirmButtonText: "Continuar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        change.value = false
+      }
     });
   } else {
     toast.error(res.message);
@@ -86,7 +90,7 @@ const loginUser = async () => {
 
   if (res.ok) {
     toast.success(res.message);
-    router.push("/")
+    router.push("/");
   } else {
     toast.error(res.message);
   }
