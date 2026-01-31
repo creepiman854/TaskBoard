@@ -1,7 +1,7 @@
 <template>
   <div class="sticky top-0 z-50 py-5">
-    <header class="p-8 flex flex-row justify-center items-center gap-20 mx-10 relative shadow-2xl rounded-full">
-      <nav class="flex gap-30">
+    <header class="p-8 flex flex-row lg:justify-center items-center gap-20 mx-3 lg:mx-10 relative shadow-2xl rounded-full">
+      <nav class="flex gap-5 lg:gap-30">
         <router-link to="/" class="nav-link">Tareas</router-link>
         <router-link to="/workspace" class="nav-link">Área de trabajo</router-link>
       </nav>

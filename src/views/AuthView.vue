@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen flex justify-center items-center">
+  <main class="min-h-screen flex justify-center items-center p-8">
     <Transition name="fade" mode="out-in">
       <section v-if="change" :class="section" :key="'register'">
         <form @submit.prevent="registerUser" :class="form">
@@ -28,8 +28,8 @@
           </button>
         </form>
         <span
-          >¿Ya tienes cuenta?
-          <button @click="change = false" :class="link">Inicia sesión</button>.</span
+          >¿Ya tienes cuenta?<button @click="change = false" :class="link">Inicia sesión</button
+          >.</span
         >
       </section>
       <section v-else :class="section" :key="'login'">
@@ -49,8 +49,7 @@
           </button>
         </form>
         <span
-          >¿No tienes cuenta?
-          <button @click="change = true" :class="link">Regístrate</button>.</span
+          >¿No tienes cuenta?<button @click="change = true" :class="link">Regístrate</button>.</span
         >
       </section>
     </Transition>
@@ -129,7 +128,7 @@ const loginUser = async () => {
 };
 
 // ESTILOS
-const section = "flex flex-col w-140 p-15 gap-15 items-center";
+const section = "flex flex-col p-12 gap-10 items-center w-full lg:w-140 lg:p-15 lg:gap-15";
 const form = "flex flex-col gap-10 justify-between h-full w-full";
 const inputBox = "flex flex-col gap-2";
 const input = "w-full py-3 px-5 outline-none";
@@ -237,6 +236,14 @@ section
   border-width: 2px !important
   border-style: solid !important
   box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff !important
+
+  @media (max-width: 640px)
+  min-width: 250px !important
+  max-width: 90vw !important
+  margin-right: auto !important
+  margin-left: auto !important
+  padding: 12px !important
+  align-items: center !important
 
   &--success
     border-color: #4ade80 !important

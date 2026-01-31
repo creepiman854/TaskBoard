@@ -2,7 +2,7 @@
   <main class="min-h-screen flex flex-col">
     <header-component></header-component>
 
-    <section class="flex-1 flex flex-col items-center gap-10 p-10">
+    <section class="flex-1 flex flex-col items-center gap-10 p-5 lg:p-10">
       <div v-if="isLoading" class="flex flex-col items-center gap-10 mt-20">
         <div class="wrapper-loader">
           <span></span>
@@ -24,7 +24,7 @@
       <template v-else>
         <div v-if="tasksList.length > 0" class="tasksBox" :class="tasksBox">
           <div v-for="(task, index) in tasksList" :key="index" class="tasks" :class="tasks">
-            <div class="flex flex-row items-center">
+            <div class="flex flex-col gap-2 lg:gap-0 lg:flex-row items-center">
               <span v-if="task.completed" class="text-green-500">
                 <font-awesome-icon icon="fa-solid fa-circle-check" />
               </span>
@@ -93,9 +93,10 @@ const printTask = async () => {
 
 onMounted(() => printTask());
 
-// ESTILOS DE ESTRUCTURA (Tailwind)
-const tasksBox = "w-full max-w-5xl p-10 flex flex-col gap-6 mb-10";
-const tasks = "flex flex-row justify-between items-center p-5 w-full transition-all duration-300";
+// ESTILOS
+const tasksBox = "w-full max-w-5xl p-5 lg:p-10 flex flex-col gap-4 lg:gap-6 mb-10";
+const tasks =
+  "flex flex-col gap-5 text-sm lg:text-[15px] lg:flex-row text-center lg:text-left lg:justify-between items-center p-5 w-full transition-all duration-300";
 </script>
 
 <style lang="sass" scoped>

@@ -1,7 +1,7 @@
 <template>
   <main class="min-h-screen flex flex-col">
     <header-component></header-component>
-    <section class="flex-1 flex flex-col items-center gap-10 p-10">
+    <section class="flex-1 flex flex-col items-center gap-10 p-5 lg:p-10">
       <div v-if="isLoading" class="flex flex-col items-center gap-10 mt-20">
         <div class="wrapper-loader">
           <span></span>
@@ -16,7 +16,7 @@
       </div>
 
       <template v-else>
-        <select v-model="taskStatus" class="p-3 w-150 text-center">
+        <select v-model="taskStatus" class="p-3 w-full lg:w-150 text-center">
           <option value="" disabled hidden selected>Estado de la tarea</option>
           <option value="all">Todas</option>
           <option value="finished">Finalizada</option>
@@ -26,7 +26,7 @@
 
         <div :class="tasksBox" class="tasksBox">
           <div class="tasks" :class="tasks" v-for="(task, index) in filteredTask" :key="index">
-            <div class="flex flex-row">
+            <div class="flex flex-col lg:flex-row">
               <span v-if="task.completed" class="text-green-500"
                 ><font-awesome-icon icon="fa-solid fa-circle-check"
               /></span>
@@ -36,7 +36,7 @@
               <p>{{ task.todo }}</p>
             </div>
             <button
-              class="border disabled:bg-amber-600"
+              class="border disabled:bg-amber-600 w-full lg:w-auto"
               @click="addTask(task)"
               :disabled="task.assigned || task.completed"
             >
@@ -137,8 +137,9 @@ const filteredTask = computed(() => {
 onMounted(() => loadData());
 
 // ESTILOS
-const tasksBox = "w-full max-w-5xl p-10 flex flex-col gap-6 mb-10";
-const tasks = "flex flex-row justify-between items-center p-5 w-full transition-all duration-300";
+const tasksBox = "w-full max-w-5xl p-5 lg:p-10 flex flex-col gap-4 lg:gap-6 mb-10";
+const tasks =
+  "flex flex-col gap-5 text-sm lg:text-[15px] lg:flex-row text-center lg:text-left lg:justify-between items-center p-5 w-full transition-all duration-300";
 </script>
 
 <style lang="sass" scoped>
@@ -216,4 +217,43 @@ button
     transform: scale(1)
     &::before, &::after
       display: none
+</style>
+
+<!-- ESTILOS DEL TOAST -->
+<style lang="sass">
+@import "@/assets/neumorphic.sass"
+
+.Vue-Toastification__toast
+  @include outset(sm, 15px)
+  background: #e9e9e9 !important
+  color: #444 !important
+  border-width: 2px !important
+  border-style: solid !important
+  box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff !important
+
+  @media (max-width: 640px)
+    min-width: 250px !important
+    max-width: 90vw !important
+    margin-right: auto !important
+    margin-left: auto !important
+    padding: 12px !important
+    align-items: center !important
+
+  &--success
+    border-color: #4ade80 !important
+    .Vue-Toastification__icon
+      color: #4ade80 !important
+
+  &--error
+    border-color: #f87171 !important
+    .Vue-Toastification__icon
+      color: #f87171 !important
+
+  &--warning
+    border-color: #fbbf24 !important
+    .Vue-Toastification__icon
+      color: #fbbf24 !important
+
+  .Vue-Toastification__toast-body
+    font-weight: 600 !important
 </style>
