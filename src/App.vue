@@ -1,9 +1,11 @@
 <script setup></script>
 
 <template>
-  <main class="h-screen">
+  <main class="h-screen bg-[#ebebeb]">
     <router-view></router-view>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

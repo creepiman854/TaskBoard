@@ -16,18 +16,16 @@
 </template>
 
 <script setup>
-import { getTask } from "@/services/firestore";
+import { getMyTasks } from "@/services/firestore";
 import { onMounted, ref } from "vue";
 
 const tasksList = ref([]);
 
 const printTask = async () => {
   try {
-    const res = await getTask();
+    const res = await getMyTasks();
 
-    if (res.ok) {
-      tasksList.value = res.data;
-    }
+    tasksList.value = res;
   } catch (error) {
     console.log(error);
   }

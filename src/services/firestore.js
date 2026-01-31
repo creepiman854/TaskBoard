@@ -1,48 +1,36 @@
 import { auth, db } from "@/firebase/config";
-import { setDoc, getDocs, doc, collection } from "firebase/firestore";
+import { setDoc, getDocs, doc, collection, where, query } from "firebase/firestore";
 
 export const setTask = async (data) => {
   try {
-    const docRef = doc(db, "users", auth.currentUser.uid, "tasks", String(data.id));
-    await setDoc(docRef, {
-      todo: data.todo,
-      completed: data.completed,
-      asigned: true,
-    });
+    const docRef = doc(db, "assignedTasks", String(data.id));
 
-    return {
-      ok: true,
-      message: "Tarea añadida.",
-    };
+    await setDoc(
+      docRef,
+      {
+        assigned: true,
+        userId: auth.currentUser.uid,
+        todo: data.todo,
+        completed: data.completed,
+      },
+      { merge: true },
+    );
+
+    return { ok: true, message: "Tarea añadida." };
   } catch (error) {
-    console.log("ADDDOC ERROR: ", error);
-
-    return {
-      ok: false,
-      message: "No se ha podido añadir la tarea.",
-    };
+    return { ok: false, message: "Error al asignar." };
   }
 };
 
 export const getTask = async () => {
-  try {
-    const docRef = collection(db, "users", auth.currentUser.uid, "tasks");
-    const docSnap = await getDocs(docRef);
+  const colRef = collection(db, "assignedTasks");
+  const querySnapshot = await getDocs(colRef);
+  return querySnapshot.docs.map((doc) => ({ id: Number(doc.id), ...doc.data() }));
+};
 
-    const tasksList = [];
-
-    docSnap.forEach((task) => tasksList.push(task.data()));
-    console.log(tasksList);
-
-    return {
-      ok: true,
-      data: tasksList,
-    };
-  } catch (error) {
-    console.log("GETDOCS ERROR: ", error);
-
-    return {
-      ok: false,
-    };
-  }
+export const getMyTasks = async () => {
+  const colRef = collection(db, "assignedTasks");
+  const q = query(colRef, where("userId", "==", auth.currentUser.uid));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
