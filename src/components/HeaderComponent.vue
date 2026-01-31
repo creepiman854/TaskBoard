@@ -52,6 +52,7 @@ header
 .nav-link
   transition: all 0.2s ease
   &:hover
-    text-shadow: 0.5px 0 0 currentColor
     transform: translateY(-1px)
+    text-shadow: 0.5px 0 0 currentColor
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2))
 </style>

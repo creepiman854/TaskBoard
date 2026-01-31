@@ -1,61 +1,64 @@
 <template>
   <main class="min-h-screen flex justify-center items-center">
-    <section v-if="change == true" :class="section">
-      <form @submit.prevent="registerUser" :class="form">
-        <div class="flex flex-col gap-5">
-          <div :class="inputBox">
-            <label class="user-label">Correo electrónico</label>
-            <input v-model="email" required type="email" :class="input" />
+    <Transition name="fade" mode="out-in">
+      <section v-if="change" :class="section" :key="'register'">
+        <form @submit.prevent="registerUser" :class="form">
+          <div class="flex flex-col gap-5">
+            <div :class="inputBox">
+              <label class="user-label">Correo electrónico</label>
+              <input v-model="email" required type="email" :class="input" />
+            </div>
+            <div :class="inputBox">
+              <label class="user-label">Contraseña</label>
+              <input v-model="password" required type="password" :class="input" />
+            </div>
+            <div :class="inputBox">
+              <label class="user-label">Confirmar contraseña</label>
+              <input
+                v-model="confirmPassword"
+                required
+                type="password"
+                autocomplete="off"
+                :class="input"
+              />
+            </div>
           </div>
-          <div :class="inputBox">
-            <label class="user-label">Contraseña</label>
-            <input v-model="password" required type="password" :class="input" />
+          <button :disabled="loading" class="button" :class="button">
+            {{ loading ? "Creando cuenta..." : "Crear cuenta" }}
+          </button>
+        </form>
+        <span
+          >¿Ya tienes cuenta?
+          <button @click="change = false" :class="link">Inicia sesión</button>.</span
+        >
+      </section>
+      <section v-else :class="section" :key="'login'">
+        <form @submit.prevent="loginUser" :class="form">
+          <div class="flex flex-col gap-5">
+            <div :class="inputBox">
+              <label class="user-label">Correo electrónico</label>
+              <input v-model="email" required type="email" :class="input" />
+            </div>
+            <div :class="inputBox">
+              <label class="user-label">Contraseña</label>
+              <input v-model="password" required type="password" :class="input" />
+            </div>
           </div>
-          <div :class="inputBox">
-            <label class="user-label">Confirmar contraseña</label>
-            <input
-              v-model="confirmPassword"
-              required
-              type="password"
-              autocomplete="off"
-              :class="input"
-            />
-          </div>
-        </div>
-        <button :disabled="loading" class="button" :class="button">
-          {{ loading ? "Creando cuenta..." : "Crear cuenta" }}
-        </button>
-      </form>
-      <span
-        >¿Ya tienes cuenta?
-        <button @click="change = false" :class="link">Inicia sesión</button>.</span
-      >
-    </section>
-    <section v-if="change == false" :class="section">
-      <form @submit.prevent="loginUser" :class="form">
-        <div class="flex flex-col gap-5">
-          <div :class="inputBox">
-            <label class="user-label">Correo electrónico</label>
-            <input v-model="email" required type="email" :class="input" />
-          </div>
-          <div :class="inputBox">
-            <label class="user-label">Contraseña</label>
-            <input v-model="password" required type="password" :class="input" />
-          </div>
-        </div>
-        <button :disabled="loading" class="button" :class="button">
-          {{ loading ? "Iniciando sesión..." : "Iniciar sesión" }}
-        </button>
-      </form>
-      <span
-        >¿No tienes cuenta? <button @click="change = true" :class="link">Regístrate</button>.</span
-      >
-    </section>
+          <button :disabled="loading" class="button" :class="button">
+            {{ loading ? "Iniciando sesión..." : "Iniciar sesión" }}
+          </button>
+        </form>
+        <span
+          >¿No tienes cuenta?
+          <button @click="change = true" :class="link">Regístrate</button>.</span
+        >
+      </section>
+    </Transition>
   </main>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { register, login } from "@/services/auth";
 import { useToast } from "vue-toastification";
 import Swal from "sweetalert2";
@@ -72,6 +75,14 @@ const confirmPassword = ref("");
 
 const validPassword = computed(() => password.value === confirmPassword.value);
 
+// LIMPIAR INPUTS AL CAMBIAR
+watch(change, () => {
+  email.value = "";
+  password.value = "";
+  confirmPassword.value = "";
+});
+
+// REGISTRAR USUARIO
 const registerUser = async () => {
   if (!validPassword.value) {
     toast.warning("Las constraseñas deben coincidir.");
@@ -103,6 +114,7 @@ const registerUser = async () => {
   }
 };
 
+// INICIAR SESIÓN
 const loginUser = async () => {
   loading.value = true;
   const res = await login(email.value, password.value);
@@ -125,6 +137,7 @@ const button = "w-full p-5 font-semibold text-xl";
 const link = "link-style ml-1";
 </script>
 
+<!-- ESTILOS DE LA VISTA -->
 <style lang="sass" scoped>
 @import "@/assets/neumorphic.sass"
 
@@ -153,8 +166,22 @@ section
     transform: translateY(-1px)
     text-shadow: 0.5px 0 0 currentColor
     filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2))
+
+// ANIMACIÓN DE CAMBIO
+.fade-enter-active,
+.fade-leave-active
+  transition: all 0.3s ease
+
+.fade-enter-from
+  opacity: 0
+  transform: translateY(10px)
+
+.fade-leave-to
+  opacity: 0
+  transform: translateY(-10px)
 </style>
 
+<!-- ESTILOS DEL ALERT -->
 <style lang="sass">
 .swal2-popup.swal2-modal
   background: #e9e9e9
@@ -197,4 +224,35 @@ section
 
   [class^='swal2-success-line']
     background-color: #4ade80 !important
+</style>
+
+<!-- ESTILOS DEL TOAST -->
+<style lang="sass">
+@import "@/assets/neumorphic.sass"
+
+.Vue-Toastification__toast
+  @include outset(sm, 15px)
+  background: #e9e9e9 !important
+  color: #444 !important
+  border-width: 2px !important
+  border-style: solid !important
+  box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff !important
+
+  &--success
+    border-color: #4ade80 !important
+    .Vue-Toastification__icon
+      color: #4ade80 !important
+
+  &--error
+    border-color: #f87171 !important
+    .Vue-Toastification__icon
+      color: #f87171 !important
+
+  &--warning
+    border-color: #fbbf24 !important
+    .Vue-Toastification__icon
+      color: #fbbf24 !important
+
+  .Vue-Toastification__toast-body
+    font-weight: 600 !important
 </style>
