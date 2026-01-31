@@ -1,42 +1,38 @@
 <template>
-  <div>
-    <h1>TAREAS</h1>
-    <button @click="userLogout" class="border">Cerrar sesión</button>
-    <router-link to="/workspace">Workspace</router-link>
-    <select v-model="taskStatus">
-      <option value="" disabled hidden selected>Estado de la tarea</option>
-      <option value="all">Todas</option>
-      <option value="finished">Finalizada</option>
-      <option value="unfinished">En proceso</option>
-      <option value="assigned">Asignada</option>
-    </select>
-    <section>
-      <div
-        class="flex flex-row justify-between w-250 border"
-        v-for="(task, index) in filteredTask"
-        :key="index"
-      >
-        <div class="flex flex-row">
-          <span v-if="task.completed">✅</span>
-          <span v-else>🥸</span>
-          <p>{{ task.todo }}</p>
+  <main class="min-h-screen flex flex-col">
+    <header-component></header-component>
+    <section class="flex-1 flex flex-col items-center gap-10 p-10">
+      <select v-model="taskStatus" class="p-3 w-150 text-center">
+        <option value="" disabled hidden selected>Estado de la tarea</option>
+        <option value="all">Todas</option>
+        <option value="finished">Finalizada</option>
+        <option value="unfinished">En proceso</option>
+        <option value="assigned">Asignada</option>
+      </select>
+      <div :class="tasksBox" class="tasksBox">
+        <div class="tasks" :class="tasks" v-for="(task, index) in filteredTask" :key="index">
+          <div class="flex flex-row">
+            <span v-if="task.completed" class="text-green-500"><font-awesome-icon icon="fa-solid fa-circle-check" /></span>
+            <span v-else class="text-amber-500"><font-awesome-icon icon="fa-solid fa-clock" /></span>
+            <p>{{ task.todo }}</p>
+          </div>
+          <button
+            class="border disabled:bg-amber-600"
+            @click="addTask(task)"
+            :disabled="task.assigned || task.completed"
+          >
+            Asignar tarea
+          </button>
         </div>
-        <button
-          class="border disabled:bg-amber-600"
-          @click="addTask(task)"
-          :disabled="task.assigned || task.completed"
-        >
-          Asignar tarea
-        </button>
       </div>
     </section>
-  </div>
+  </main>
 </template>
 
 <script setup>
+import HeaderComponent from "@/components/HeaderComponent.vue";
+
 import { onMounted, ref, computed } from "vue";
-import router from "@/router";
-import { logout } from "@/services/auth";
 import { useToast } from "vue-toastification";
 import { setTask, getTask } from "@/services/firestore";
 import { useTaskStore } from "@/stores/taskStore";
@@ -72,17 +68,6 @@ const addTask = async (task) => {
   }
 };
 
-// CERRAR SESIÓN
-const userLogout = async () => {
-  const res = await logout();
-  if (res.ok) {
-    toast.success(res.message);
-    router.push("/authentication");
-  } else {
-    toast.error(res.message);
-  }
-};
-
 const filteredTask = computed(() => {
   const copyTask = taskStore.tasksList.map((task) => {
     const isAssigned = tasksListFirestore.value.some((t) => Number(t.id) === task.id);
@@ -109,6 +94,45 @@ onMounted(async () => {
   await taskStore.getTask();
   await getTaskFirestore();
 });
+
+// ESTILOS DE ESTRUCTURA
+const tasksBox = "w-full max-w-5xl p-10 flex flex-col gap-6 mb-10";
+const tasks = "flex flex-row justify-between items-center p-5 w-full transition-all duration-300";
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="sass" scoped>
+@import "@/assets/neumorphic.sass"
+
+select
+  @include outset(sm, 100vh, true)
+  cursor: pointer
+  outline: none
+  border: none
+  appearance: none
+
+.tasksBox
+  @include outset(lg, 30px)
+  background: #e9e9e9
+
+.tasks
+  @include outset(sm, 20px)
+
+  p
+    margin-left: 12px
+    font-weight: 500
+    color: #444
+
+button
+  @include outset(sm, 10px, true)
+  padding: 8px 16px
+  font-size: 0.875rem
+  font-weight: 600
+  color: #555
+
+  &:disabled
+    opacity: 0.5
+    cursor: not-allowed
+    transform: scale(1)
+    &::before, &::after
+      display: none
+</style>

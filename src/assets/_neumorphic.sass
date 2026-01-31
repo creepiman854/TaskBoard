@@ -1,0 +1,58 @@
+$shadow-lg: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff
+$shadow-sm: 5px 5px 10px #c6c6c6, -5px -5px 10px #ffffff
+
+$inset-shadow-lg: inset 10px 10px 20px #c6c6c6, inset -10px -10px 20px #ffffff
+$inset-shadow-sm: inset 5px 5px 10px #c6c6c6, inset -5px -5px 10px #ffffff
+
+@mixin inset($size: lg, $radius)
+  border-radius: $radius
+  background: #e9e9e9
+
+  @if $size == sm
+    box-shadow: $inset-shadow-sm
+  @else
+    box-shadow: $inset-shadow-lg
+
+    outline: none
+
+@mixin outset($size: lg, $radius, $interactive: false)
+  position: relative
+  overflow: hidden
+  border-radius: $radius
+  background: #e9e9e9
+  border: none
+  outline: none
+  z-index: 1
+
+  box-shadow: if($size == sm, $shadow-sm, $shadow-lg)
+
+  @if $interactive
+    transition: transform 0.2s ease, box-shadow 0.2s ease
+
+    &::before, &::after
+      content: ""
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      opacity: 0
+      z-index: -1
+
+    &::before
+      background: linear-gradient(145deg, #f9f9f9, #d2d2d2)
+      transition: opacity 0.2s ease-out // Hover rápido pero suave
+
+    &::after
+      background: linear-gradient(145deg, #d2d2d2, #f9f9f9)
+      transition: opacity 0.1s ease // Active casi instantáneo
+
+    &:hover:not(:disabled)
+      cursor: pointer
+      &::before
+        opacity: 1
+
+    &:active:not(:disabled)
+      transform: scale(0.98)
+      &::after
+        opacity: 1

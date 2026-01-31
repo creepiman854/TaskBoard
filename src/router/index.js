@@ -11,7 +11,11 @@ const router = createRouter({
       component: () => import("@/views/WorkspaceView.vue"),
       meta: { requiresAuth: true },
     },
-    { path: "/authentication", component: () => import("@/views/AuthView.vue") },
+    {
+      path: "/authentication",
+      component: () => import("@/views/AuthView.vue"),
+      meta: { isLogged: true },
+    },
   ],
 });
 
@@ -19,6 +23,8 @@ router.beforeEach((to, from, next) => {
   onAuthStateChanged(auth, (userFirebase) => {
     if (to.meta.requiresAuth && !userFirebase) {
       next("/authentication");
+    } else if (to.meta.isLogged && userFirebase) {
+      next("/");
     } else {
       next();
     }
