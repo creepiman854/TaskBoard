@@ -238,12 +238,12 @@ section
   box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff !important
 
   @media (max-width: 640px)
-  min-width: 250px !important
-  max-width: 90vw !important
-  margin-right: auto !important
-  margin-left: auto !important
-  padding: 12px !important
-  align-items: center !important
+    min-width: 250px !important
+    max-width: 90vw !important
+    margin-right: auto !important
+    margin-left: auto !important
+    padding: 12px !important
+    align-items: center !important
 
   &--success
     border-color: #4ade80 !important
