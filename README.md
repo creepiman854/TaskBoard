@@ -52,62 +52,14 @@ TaskBoard permite a los usuarios crear, gestionar y rastrear tareas. Incluye aut
    npm run dev
    ```
 
-### Comandos
+### Compile and Minify for Production
 
-- `npm run dev` - Servidor de desarrollo
-- `npm run build` - Compilar para producción
-- `npm run lint` - Ejecutar linters
-- `npm run format` - Formatear código
-
-
-## 🌐 Enlace de Vercel
-
-[Ver en Vercel](https://task-board-kappa-roan.vercel.app)
-
-## 📦 Estructura de Firebase - Firestore
-
-### Colección de Tareas
-
-La colección principal almacena todas las tareas del sistema. Cada documento representa una tarea individual asignada a un usuario.
-
-### Estructura del Documento
-
-Cada documento contiene los siguientes campos:
-
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | String | ID único del documento (número convertido a string) |
-| `assigned` | Boolean | Indica si la tarea está asignada (siempre `true`) |
-| `userId` | String | UID del usuario de Firebase propietario de la tarea |
-| `todo` | String | Título o descripción de la tarea |
-| `completed` | Boolean | Estado de finalización de la tarea (true/false) |
-
-##### Ejemplo de Documento
-
-```json
-{
-  "id": "1",
-  "assigned": true,
-  "userId": "abc123xyz789def",
-  "todo": "Implementar sistema de autenticación",
-  "completed": false
-}
+```sh
+npm run build
 ```
 
-##### Diagrama de la Estructura
+### Lint with [ESLint](https://eslint.org/)
 
-```
-Firestore
-└── Colección de Tareas
-    ├── Documento 1
-    │   ├── assigned: true
-    │   ├── userId: "user_uid_123"
-    │   ├── todo: "Primera tarea"
-    │   └── completed: false
-    ├── Documento 2
-    │   ├── assigned: true
-    │   ├── userId: "user_uid_456"
-    │   ├── todo: "Segunda tarea"
-    │   └── completed: true
-    └── ...
+```sh
+npm run lint
 ```
